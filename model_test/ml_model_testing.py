@@ -4,29 +4,29 @@ import csv
 
 # Relevant gender features of a name
 def gender_features(name):
-	return {
-		'prefix1':name[:1],
-		'suffix1':name[-1:],
-		'suffix2':name[-2:],
-		'suffix3':name[-3:],
-		'length':len(name)
-	}
+  return {
+    'prefix1':name[:1],
+    'suffix1':name[-1:],
+    'suffix2':name[-2:],
+    'suffix3':name[-3:],
+    'length':len(name)
+  }
 
 # Import data
 labelled_names = []
 countM = 0
 countF = 0
 with open('../data/name_gender.csv') as csv_file:
-	csv_reader = csv.reader(csv_file, delimiter=',')
-	for row in csv_reader:
-		labelled_names.append((row[0], row[1]))
-		if row[1] == 'M':
-			countM += 1
-		elif row[1] == 'F':
-			countF += 1
-		else:
-			print("ERROR"+row[1])
-			exit()
+  csv_reader = csv.reader(csv_file, delimiter=',')
+  for row in csv_reader:
+    labelled_names.append((row[0], row[1]))
+    if row[1] == 'M':
+      countM += 1
+    elif row[1] == 'F':
+      countF += 1
+    else:
+      print("ERROR"+row[1])
+      exit()
 
 print("M : {}".format(countM))
 print("F : {}".format(countF))
@@ -38,11 +38,11 @@ random.shuffle(labelled_names)
 names = []
 count = 0
 for row in labelled_names:
-	if row[1] == 'F' and count < countM:
-		count += 1
-		names.append(row)
-	elif row[1] == 'M':
-		names.append(row)	
+  if row[1] == 'F' and count < countM:
+    count += 1
+    names.append(row)
+  elif row[1] == 'M':
+    names.append(row) 
 
 print(len(names)/2)
 num_train = int(0.66 * len(names))
