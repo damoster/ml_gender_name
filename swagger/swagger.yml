@@ -1,0 +1,102 @@
+swagger: "2.0"
+info:
+  description: "Basic machine learning application to generate genders of names"
+  version: "1.0.0"
+  title: "ML Name Gender" 
+
+host: "127.0.0.1:5000"
+schemes:
+- "http"
+
+paths:
+  /retrain:
+    post:
+      summary: "Retrain the model with current data"
+      description: "Returns the % accuracy of the new model"
+      produces:
+        - "application/json"
+      responses:
+        200: 
+          description: OK
+          schema:
+            type: object
+            properties:
+              accuracy: 
+                type: number
+                format: float
+                example: 0.77624624
+        500:
+          description: "Internal Server Error"
+  /reset:
+    post:
+      summary: "Reset the model to the original csv data"
+      description: "Returns the % accuracy of the new model"
+      produces:
+        - "application/json"
+      responses:
+        200: 
+          description: OK
+          schema:
+            type: object
+            properties:
+              accuracy: 
+                type: number
+                format: float
+                example: 0.77624624
+        500:
+          description: "Internal Server Error"
+  /predict:
+    get:
+      summary: "Predict the gender of given name"
+      produces:
+        - "application/json"
+      parameters:
+        - name: name
+          in: "query"
+          type: "string"
+          required: true
+          description: "Target name to be used for gender prediction"
+          default: "Roger"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              prediction: 
+                type: string
+                example: "M"
+        400:
+          description: "Invalid input"
+  /add:
+    post:
+      summary: "Add a name with gender label to the data pool"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: name
+          in: "body"
+          required: true
+          description: "Name and gender label to be added"
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                example: "Felicity"
+              label:
+                type: string
+                example: "F"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              success: 
+                type: boolean
+                example: true
+        400:
+          description: "Invalid input"
