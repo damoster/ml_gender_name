@@ -61,5 +61,9 @@ class gender_name:
     # Should the try catches be here or in HTTP? I think in the HTTP
 
     # TODO should probs check for duplicates before adding
-    with open(self.curr_csv,'a') as fd:
-      fd.write(name.title()+","+label+"\n")
+    try:
+      with open(self.curr_csv,'a') as fd:
+        fd.write(name.title()+","+label+"\n")
+      return True
+    except:
+      return False
