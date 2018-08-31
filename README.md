@@ -1,7 +1,7 @@
 # ML name gender server
 
 ## Overview
-Machine learning application server with endpoints for 
+Machine learning application server with endpoints to interact with the namge gender machine learning model. Documentation of the endpoints can be found in the swagger/swagger.yml file. 
 
 ## Requirements
 Python 3.6.5+
