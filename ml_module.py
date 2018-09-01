@@ -19,25 +19,18 @@ class gender_name:
       'suffix1':name[-1:],
       'suffix2':name[-2:],
       'suffix3':name[-3:],
+      'suffix4':name[-4:],
+      'suffix5':name[-5:],
       'length':len(name)
     }
 
+  # Retrain the model using current data pool
   def retrain(self):
-    # Import data
     labelled_names = []
-    # countM = 0
-    # countF = 0
     with open(self.curr_csv) as csv_file:
       csv_reader = csv.reader(csv_file, delimiter=',')
       for row in csv_reader:
         labelled_names.append((row[0], row[1]))
-        # if row[1] == 'M':
-        #   countM += 1
-        # elif row[1] == 'F':
-        #   countF += 1
-        # else:
-        #   print("ERROR"+row[1])
-        #   exit()
 
     random.shuffle(labelled_names)
     names = labelled_names
@@ -50,18 +43,32 @@ class gender_name:
 
     return(nltk.classify.accuracy(self.classifier, test_set))
 
+  # Reset current data pool to the initial data set
   def reset(self):
     copyfile(self.init_csv, self.curr_csv)
     return(self.retrain())
 
+  # Predict the gender of the given input name
   def predict(self, name):
     return self.classifier.classify(self.gender_features(name))
     
+  # Add a labelled data entry to the current data pool
+  # @pre-condition: name and label are strings
   def add(self, name, label):
-    # TODO should probs check for duplicates before adding
+    label = label.upper()
+    if not (label == 'M' or label == 'F'):
+      return (False, "Invalid label, label must be 'M' or 'F'")
+
+    # Check if name already exists or not
+    with open(self.curr_csv) as csv_file:
+      csv_reader = csv.reader(csv_file, delimiter=',')
+      for row in csv_reader:
+        if name.lower() == row[0].lower():
+          return (False, "Name already exists in data pool")
+
     try:
       with open(self.curr_csv,'a') as fd:
         fd.write(name.title()+","+label+"\n")
-      return True
+      return (True, "Name was successfully added to data pool")
     except:
-      return False
+      return (False, "Name was not able to be successfully added to data pool")

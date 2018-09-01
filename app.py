@@ -2,10 +2,6 @@ from flask import Flask, request, Response, jsonify
 from flask_cors import CORS
 import ml_module
 
-# Useful URLS
-# http://blog.luisrei.com/articles/flaskrest.html
-# https://restfulapi.net/http-status-codes/
-
 app = Flask(__name__)
 CORS(app) # For Swagger UI integration
 gender_name_model = ml_module.gender_name()
@@ -63,10 +59,9 @@ def predict():
   resp.status_code = 200
   return resp
 
-# curl -d '{"name":"ray","label":"M"}' -H "Content-Type: application/json" -X POST http://127.0.0.1:5000/add
 @app.route("/add", methods=['POST', 'OPTION'])
 def add():
-  if request.is_json: # Content-Type: application/json
+  if request.is_json:
     request_json = request.get_json()
     try:
       name = request_json.get('name')
@@ -76,9 +71,13 @@ def add():
   else:
     return errorResponse("Invalid input", 400)
 
-  is_success = gender_name_model.add(name, label) # TODO, maybe return new total data count?
+  if not (isinstance(name, str) and isinstance(label, str)):
+    return errorResponse("Invalid input", 400)
+
+  is_success, addMsg = gender_name_model.add(name, label) 
   data = {
-    'success':is_success
+    'success':is_success,
+    'addMsg': addMsg
   }
   resp = jsonify(data)
   resp.status_code = 200

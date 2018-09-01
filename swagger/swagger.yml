@@ -76,7 +76,7 @@ paths:
       produces:
         - "application/json"
       parameters:
-        - name: name
+        - name: labelledData
           in: "body"
           required: true
           description: "Name and gender label to be added"
@@ -98,5 +98,8 @@ paths:
               success: 
                 type: boolean
                 example: true
+              addMsg:
+                type: string
+                example: "Name was successfully added to data pool"
         400:
           description: "Invalid input"

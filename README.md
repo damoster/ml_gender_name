@@ -24,6 +24,7 @@ The API documentation can be found in the following directory:
 ```
 swagger/swagger.yml
 ```
+Import the file onto https://editor.swagger.io/ to view in Swagger Editor
 
 ## Running with Docker
 
