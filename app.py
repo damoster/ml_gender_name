@@ -26,7 +26,6 @@ def retrain():
     resp.status_code = 200
     return resp
   except Exception as e:
-    # print(e)
     return errorResponse("Internal Server Error",500)
 
 @app.route("/reset", methods=['POST'])
@@ -40,14 +39,13 @@ def reset():
     resp.status_code = 200
     return resp
   except Exception as e:
-    # print(e)
     return errorResponse("Internal Server Error",500)
 
 @app.route("/predict", methods=['GET'])
 def predict():
-  try:
+  if ('name' in request.args) and isinstance(request.args['name'], str):
     name = request.args['name']
-  except:
+  else:
     return errorResponse("Invalid input", 400)
 
   prediction = gender_name_model.predict(name)
