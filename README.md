@@ -35,7 +35,7 @@ To run the server on a Docker container, please execute the following from the r
 docker build -t name_gender_server .
 
 # starting up a container
-docker run -p 8080:8080 name_gender_server
+docker run -p 5000:5000 name_gender_server
 ```
 
 Alternatively, using the provided shell script with your preferred 'image_name'
