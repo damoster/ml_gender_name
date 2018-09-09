@@ -26,19 +26,42 @@ class gender_name:
 
   # Retrain the model using current data pool
   def retrain(self):
-    labelled_names = []
+    male_names = []
+    female_names = []
     with open(self.curr_csv) as csv_file:
       csv_reader = csv.reader(csv_file, delimiter=',')
       for row in csv_reader:
-        labelled_names.append((row[0], row[1]))
+        if row[1] == 'M':
+          male_names.append((row[0], row[1]))
+        elif row[1] == 'F':
+          female_names.append((row[0], row[1]))
+        else:
+          raise ValueError('Invalid label found in CSV: {} {}'.format(row[0], row[1]))
+  
+    random.shuffle(male_names)
+    random.shuffle(female_names)
 
-    random.shuffle(labelled_names)
-    names = labelled_names
-    num_train = int(self.prop_train * len(names))
-    num_test = len(names) - num_train
+    # Adjusting train set to ensure no gender bias by moving difference into test set
+    test_names = []
+    if len(male_names) > len(female_names):
+      diff = len(male_names) - len(female_names)
+      test_names = male_names[:diff]
+      
+      male_names = male_names[diff:]
+    elif len(male_names) < len(female_names):
+      diff = len(female_names) - len(male_names)
+      test_names = female_names[:diff]
 
-    featuresets = [(self.gender_features(n), gender) for (n, gender) in names]
-    train_set, test_set = featuresets[num_train:], featuresets[:num_test]
+      female_names = female_names[diff:]
+
+    # Num male and female will be equal after above adjustment
+    num_train = int(self.prop_train * len(male_names))
+    train_names = male_names[:num_train] + female_names[:num_train]
+    test_names = test_names + male_names[num_train:] + female_names[num_train:] 
+
+    train_set = [(self.gender_features(n), gender) for (n, gender) in train_names]
+    test_set = [(self.gender_features(n), gender) for (n, gender) in test_names]
+
     self.classifier = nltk.NaiveBayesClassifier.train(train_set)
 
     return(nltk.classify.accuracy(self.classifier, test_set))
